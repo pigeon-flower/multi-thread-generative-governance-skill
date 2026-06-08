@@ -1,82 +1,67 @@
-# Multi-Agent Generative Governance Skill
+# 多智能体生成治理 Skill
 
-![MAGG hero](assets/hero.svg)
+![多智能体生成治理 Skill](assets/hero-zh.svg)
 
-**Multi-Agent Generative Governance**, or **MAGG**, is a Codex Skill for running complex AI generation as an auditable governance process instead of a loose collection of prompts.
+**Multi-Agent Generative Governance（MAGG，多智能体生成治理）** 是一个面向 Codex 的 Skill。它把复杂 AI 生成任务从“多开几个会话碰碰运气”变成一套可审计、可验证、可交接的治理流程。
 
-It helps Codex design and coordinate red/blue/judge/audit workflows, protect independent-session boundaries, control writes, and separate validation evidence from optimistic claims.
+> 仓库：`multi-agent-generative-governance-skill`  
+> 项目介绍：可审计多智能体生成治理 Codex Skill：独立 session 审查、验证证据、受控写入与 AI 自我改进。
 
-> Repository: `multi-agent-generative-governance-skill`  
-> Project description: A Codex Skill for auditable multi-agent generation, independent-session review, validation evidence, and governed AI self-improvement.
+## 这个 Skill 解决什么问题
 
-## What This Skill Does
+当一个 AI 任务范围大、风险高、容易自我确认，或者需要真实多线程/多角色审查时，MAGG 会先建立任务契约，再决定是否需要红队、蓝队、裁判、验证、审计等角色。
 
-MAGG is useful when an AI task is too important, too broad, or too easy to self-confirm. It turns generation into a controlled loop:
+- 先定义任务契约，再开启角色。
+- 真实 multi-thread 必须有独立 Codex session 和 session evidence。
+- 裁判允许后才执行写入，避免后台角色直接改最终产物。
+- 验证报告必须区分 L0/L1/L2/L3，不能把结构检查伪装成真实效果。
 
-- Define the task contract before opening roles.
-- Select the smallest governance mode that can actually satisfy the goal.
-- Keep true multi-thread work backed by independent Codex sessions.
-- Require evidence before claiming independent review.
-- Let judges approve edits before execution.
-- Validate with explicit levels instead of vague confidence.
-- Audit what changed, what failed, and what cannot be claimed.
+## 可视化流程
 
-## Visual Workflow
+![治理闭环](assets/governance-loop-zh.svg)
 
-![Governance loop](assets/governance-loop.svg)
-
-The loop is deliberately strict: Red finds failure modes, Blue filters and ranks them, Judge decides scope, Executor writes only what is allowed, Validator separates evidence levels, and Audit records remaining risk.
+MAGG 的核心不是“角色越多越好”，而是让每一轮都清楚回答：目标是什么、攻击面是什么、谁发现风险、谁过滤风险、谁批准修改、验证到了哪一层。
 
 ```mermaid
 flowchart LR
-    A["Task Contract"] --> B["Triage G/W/R"]
-    B --> C["Scope Lock"]
-    C --> D["Red Review"]
-    D --> E["Blue Review"]
-    E --> F["Judge Decision"]
-    F -->|Allow| G["Execute"]
-    F -->|Defer / Reject| C
-    G --> H["Validate"]
-    H --> I["Audit"]
-    I --> J["State Update / Handoff"]
+    A["任务契约"] --> B["模式选择 G/W/R"]
+    B --> C["范围锁定"]
+    C --> D["红队审查"]
+    D --> E["蓝队回应"]
+    E --> F["裁判决策"]
+    F -->|允许| G["执行"]
+    F -->|拒绝或延期| C
+    G --> H["验证"]
+    H --> I["审计"]
+    I --> J["状态更新与交接"]
 ```
 
-## True Threads, Not Roleplay
+## 真实线程，不是假装独立
 
-![Session evidence](assets/session-evidence.svg)
+![真实线程证据](assets/session-evidence-zh.svg)
 
-MAGG makes a hard distinction:
+在 MAGG 里，同一会话内扮演红队/蓝队/裁判，只能叫 `role pass`；只有拥有独立 Codex session、独立输入包、独立输出记录的角色，才算真正的 `thread`。
 
-| Term | Meaning |
+| 概念 | 含义 |
 |---|---|
-| Role pass | Same-session review performed by the main Codex context. Useful, but not independent. |
-| Thread | A delegated role backed by a separate Codex session. |
-| Session evidence | The record that proves role, title, session id, project path, input scope, forbidden inputs, output, and status. |
+| Role pass | 同一 session 内的角色审查，有帮助，但不是独立线程。 |
+| Thread | 由独立 Codex session 支撑的委托角色。 |
+| Session evidence | 记录角色、短名称、session id、项目路径、输入范围、禁止输入、输出和状态。 |
 
-When the user asks for **multi-thread**, **multi-session**, **independent perspectives**, or **anti-contamination**, MAGG requires separate project-scoped sessions for enabled roles. If those sessions cannot be created or verified, the workflow must disclose the downgrade instead of pretending.
+## 验证分层
 
-## Validation Ladder
+![验证分层](assets/validation-ladder-zh.svg)
 
-![Validation ladder](assets/validation-ladder.svg)
+MAGG 强制把“文件结构没问题”“规则检查通过”“真实路径跑通”“用户目标达成”拆成不同级别，避免低级验证冒充高级证明。
 
-MAGG avoids turning a cheap check into a big claim:
-
-| Level | What It Proves |
+| 等级 | 能证明什么 |
 |---|---|
-| L0 | Required files and structure exist. |
-| L1 | Static rules, validation scripts, or formatting checks pass. |
-| L2 | The workflow was dry-run or exercised through a realistic use path. |
-| L3 | The result succeeded against the actual user goal or an independent forward test. |
+| L0 | 必要文件、frontmatter、引用结构存在。 |
+| L1 | 静态规则、校验脚本或格式检查通过。 |
+| L2 | 至少通过真实路径或 dry-run 使用过。 |
+| L3 | 已在真实用户目标或独立 forward test 中证明有效。 |
 
-Every validation report should separate:
-
-- Verified
-- Failed
-- Not verified
-- Environment gaps
-- Cannot claim
-
-## Repository Layout
+## 仓库结构
 
 ```text
 multi-agent-generative-governance-skill/
@@ -88,66 +73,97 @@ multi-agent-generative-governance-skill/
 │       ├── templates.md
 │       └── example-runs.md
 ├── assets/
-│   ├── hero.svg
-│   ├── governance-loop.svg
-│   ├── session-evidence.svg
-│   └── validation-ladder.svg
+│   ├── hero-zh.svg
+│   ├── governance-loop-zh.svg
+│   ├── session-evidence-zh.svg
+│   ├── validation-ladder-zh.svg
+│   └── *-en.svg
 └── docs/
     ├── MAGG_visual_deck.pdf
     └── MAGG_visual_deck.pptx
 ```
 
-## Quick Start
+## 快速开始
 
-Install the skill by copying the folder into your Codex skills directory:
+把 Skill 文件夹复制到本机 Codex skills 目录：
 
 ```powershell
 Copy-Item -Recurse .\multi-agent-generative-governance "$env:USERPROFILE\.codex\skills\multi-agent-generative-governance"
 ```
 
-Then ask Codex for work that needs governance:
-
-```text
-Use $multi-agent-generative-governance to run a red/blue/judge review of this project plan.
-```
-
-For Chinese workflows:
+中文示例：
 
 ```text
 使用 $multi-agent-generative-governance 对这个 Skill 做一次真实多线程自省。每个审查线程必须是独立 session，并记录 session id 和短名称。
 ```
 
-## Example Modes
+## 模式示意
 
 ```mermaid
 flowchart TD
-    Q["User request"] --> T{"How risky is the work?"}
-    T -->|Small explicit task| G1["G1 / W1 / R0<br/>main session + light review"]
-    T -->|Important multi-section artifact| G2["G2<br/>red + blue + judge"]
-    T -->|Complex project or true independent sessions| G3["G3<br/>goal + red + blue + judge + validator + audit"]
-    G3 --> R2{"Long-running?"}
-    R2 -->|Yes| Watch["watchdog + heartbeat + locks + handoff"]
-    R2 -->|No| Close["bounded governance loop"]
+    Q["用户请求"] --> T{"风险和复杂度？"}
+    T -->|小型明确任务| G1["G1 / W1 / R0<br/>主会话 + 轻量审查"]
+    T -->|重要多段产物| G2["G2<br/>红队 + 蓝队 + 裁判"]
+    T -->|复杂项目或真实独立 session| G3["G3<br/>目标校准 + 红/蓝/裁判 + 验证 + 审计"]
+    G3 --> R2{"是否长时间运行？"}
+    R2 -->|是| Watch["watchdog + heartbeat + locks + handoff"]
+    R2 -->|否| Close["bounded governance loop"]
 ```
 
-## Included Visual Deck
+## 视觉版材料
 
-The repository includes two image-led deliverables for quick explanation and sharing:
+仓库包含一份图片感更强的介绍材料，适合快速演示 MAGG 的治理思想：
 
 - [`docs/MAGG_visual_deck.pdf`](docs/MAGG_visual_deck.pdf)
 - [`docs/MAGG_visual_deck.pptx`](docs/MAGG_visual_deck.pptx)
 
-They are designed as a motion-storyboard style introduction: dark cinematic backgrounds, sweeping process arcs, session cards, and validation frames.
+## English Version
 
-## Design Principles
+![Multi-Agent Generative Governance Skill](assets/hero-en.svg)
 
-MAGG is built around five operating principles:
+**Multi-Agent Generative Governance**, or **MAGG**, is a Codex Skill that turns complex AI generation from loose prompting into an auditable, verifiable, and handoff-ready governance process.
 
-1. **Cognitive separation**: roles have different jobs and should not silently merge.
-2. **Controlled writes**: final files are edited only after judge approval.
-3. **Evidence before claims**: independent review requires recorded session evidence.
-4. **Validation integrity**: L0 checks never masquerade as L3 success.
-5. **Bounded iteration**: one closed governance loop beats endless recursive self-review.
+> Repository: `multi-agent-generative-governance-skill`  
+> Description: A Codex Skill for auditable multi-agent generation governance, independent-session review, validation evidence, controlled writes, and governed AI self-improvement.
+
+### What This Skill Solves
+
+MAGG helps when an AI task is broad, risky, easy to self-confirm, or needs real multi-thread review. It starts with a task contract and activates only the roles the work actually needs.
+
+- Define the task contract before opening roles.
+- True multi-thread work requires independent Codex sessions and session evidence.
+- Execute writes only after judge approval.
+- Validation reports must separate L0/L1/L2/L3 and avoid overstating proof.
+
+### Visual Workflow
+
+![Governance loop](assets/governance-loop-en.svg)
+
+```mermaid
+flowchart LR
+    A["Task Contract"] --> B["Triage G/W/R"]
+    B --> C["Scope Lock"]
+    C --> D["Red Review"]
+    D --> E["Blue Review"]
+    E --> F["Judge Decision"]
+    F -->|Allow| G["Execute"]
+    F -->|Reject or Defer| C
+    G --> H["Validate"]
+    H --> I["Audit"]
+    I --> J["State Update / Handoff"]
+```
+
+### True Threads, Not Roleplay
+
+![Session evidence](assets/session-evidence-en.svg)
+
+Same-session red/blue/judge work is a `role pass`. A role becomes a real `thread` only when it has an independent Codex session, scoped input, and recorded output.
+
+### Validation Ladder
+
+![Validation ladder](assets/validation-ladder-en.svg)
+
+MAGG separates structural correctness, rule checks, realistic use-path tests, and real user-goal success so lower-level checks cannot masquerade as higher-level proof.
 
 ## License
 

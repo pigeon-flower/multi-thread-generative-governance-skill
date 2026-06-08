@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560">
+  <defs><linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#101827"/><stop offset="0.56" stop-color="#14233a"/><stop offset="1" stop-color="#281b3d"/></linearGradient><filter id="soft"><feGaussianBlur stdDeviation="14"/></filter></defs>
+  <rect width="1200" height="560" fill="url(#bg)"/>
+  <path d="M90 420 C270 285 405 500 585 340 S885 175 1100 292" fill="none" stroke="#42d9c8" stroke-width="4" opacity=".78"/>
+  <path d="M120 464 C320 338 470 500 630 376 S910 235 1100 352" fill="none" stroke="#ffcf5a" stroke-width="3" opacity=".48"/>
+  <circle cx="205" cy="384" r="64" fill="#42d9c8" opacity=".15" filter="url(#soft)"/><circle cx="940" cy="215" r="92" fill="#ffcf5a" opacity=".12" filter="url(#soft)"/>
+  <text x="72" y="86" fill="#9fe7dc" font-family="Microsoft YaHei, Segoe UI, Arial" font-size="24" font-weight="700">CODEX SKILL</text>
+  <text x="72" y="165" fill="#ffffff" font-family="Microsoft YaHei, Segoe UI, Arial" font-size="54" font-weight="800">Multi-Agent Generative Governance</text>
+  <foreignObject x="74" y="215" width="720" height="170"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:'Microsoft YaHei','Segoe UI',Arial;color:#d8e6f3;font-size:28px;line-height:1.4">A governance layer for complex AI generation: separate roles, controlled writes, evidence-backed validation, and audit-ready handoff.</div></foreignObject>
+  <g transform="translate(820 132)"><rect x="0" y="0" width="285" height="260" rx="24" fill="#ffffff" opacity=".08" stroke="#d7f7ff" stroke-opacity=".25"/><circle cx="76" cy="78" r="29" fill="#42d9c8"/><circle cx="202" cy="78" r="29" fill="#ffcf5a"/><circle cx="139" cy="171" r="35" fill="#f97583"/><path d="M101 84 L176 84 M139 112 L139 136 M114 161 L88 106 M164 161 L190 106" stroke="#edf6ff" stroke-width="8" stroke-linecap="round"/><text x="42" y="230" fill="#f4fbff" font-family="Microsoft YaHei, Segoe UI, Arial" font-size="22" font-weight="700">RED / BLUE / JUDGE</text></g>
+</svg>
