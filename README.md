@@ -6,8 +6,45 @@
 
 它不是“多开几个聊天窗口”。它解决的是：当 AI 很容易自我确认、任务范围很大、结果需要交付给别人、或者你明确要求多线程/多角色独立审查时，如何让生成过程有规则、有证据、有边界。
 
+更重要的是：**MAGG 的核心价值是用独立线程和治理记录，替代一部分原本需要人类持续盯着、反复审核、不断接管的监督工作。**
+当任务需要跑很久、跨多轮、跨多个候选版本，或者人不能一直守在旁边时，MAGG 通过红队、蓝队、裁判、验证、审计、watchdog、handoff、锁和状态文件，让 AI 在离开人类实时监管的情况下，仍然能持续自检、控制写入、记录证据，并在需要时把状态交还给人。
+
 > 仓库：`multi-agent-generative-governance-skill`  
-> 一句话介绍：可审计多智能体生成治理 Codex Skill：独立 session 审查、验证证据、受控写入与 AI 自我改进。
+> 一句话介绍：可审计多智能体生成治理 Codex Skill：用独立线程替代人工持续审核，支持长时间无人值守、验证证据、受控写入与 AI 自我改进。
+
+## 核心优势：用线程替代人工持续监督
+
+普通 AI 工作流的问题是：人一离开，AI 很容易继续沿着错误方向生成，或者生成完却没有可靠证据说明它真的检查过自己。MAGG 的设计目标不是让 AI “更会说”，而是让 AI 在长时间任务中拥有类似人工项目监管的结构。
+
+```mermaid
+flowchart LR
+    Human["人类监督者"] -->|设定目标/边界| Contract["任务契约"]
+    Contract --> Main["主控线程"]
+
+    subgraph Agents["替代人工审核的线程网络"]
+        Red["红队线程<br/>找风险"]
+        Blue["蓝队线程<br/>过滤/反驳"]
+        Judge["裁判线程<br/>批准/拒绝"]
+        Val["验证线程<br/>检查证据"]
+        Audit["审计线程<br/>记录边界"]
+        Watch["监控线程<br/>长时间盯守"]
+    end
+
+    Main --> Red --> Blue --> Judge
+    Judge -->|允许后| Main
+    Main --> Val --> Audit
+    Watch --> Main
+    Audit --> Handoff["handoff<br/>把状态交还给人"]
+    Handoff --> Human
+```
+
+MAGG 对人类监督的替代不是“完全不用人”，而是把人类从每一步都盯着，转变成：
+
+- 人负责设定目标、边界和最终取舍。
+- 线程负责持续审查、验证、记录和报警。
+- 裁判负责阻止未经允许的写入。
+- watchdog 和 handoff 负责长时间任务的状态延续。
+- 验证和审计负责告诉人：哪些是真的完成，哪些不能宣称。
 
 ## 什么时候该用 MAGG
 
@@ -15,11 +52,11 @@
 
 | 任务情形 | 为什么适合用 MAGG | 推荐强度 |
 |---|---|---|
+| 长时间任务、无人值守任务、24 小时/多轮迭代 | 核心场景。需要线程代替人工持续审核，使用心跳、handoff、锁、状态记录和接管机制 | R2 |
 | 优化一个 Skill、SOP、提示词体系或工作流 | 容易只改措辞，不解决触发、边界、验证和真实使用问题 | G2/G3 |
 | 复杂代码项目、跨文件重构、架构设计 | 需要红队找风险、裁判控范围、验证区分构建通过和真实可用 | G3 |
 | PPT、报告、教材、产品方案、故事设定等多章节产物 | 需要目标校准、结构审查、内容一致性和交付审计 | G2 |
 | 用户明确要求“多线程”“多 session”“独立视角”“防信息污染” | 必须用独立 Codex session 记录证据，不能用同一会话角色扮演糊弄 | G3 |
-| 长时间任务、无人值守任务、24 小时/多轮迭代 | 需要心跳、handoff、锁、状态记录和接管机制 | R2 |
 | 需要比较多个候选版本 | 需要候选产物、评审标准、合并裁判和验证记录 | W2/W3 |
 
 不适合使用 MAGG 的任务：
@@ -69,13 +106,13 @@ flowchart TD
     D -->|是| G3["G3<br/>目标校准 + 独立角色 + 执行 + 验证 + 审计"]
     D -->|否| G2
     D --> E{"是否长时间运行或无人值守？"}
-    E -->|是| R2["R2<br/>watchdog + heartbeat + locks + handoff"]
+    E -->|是| R2["R2<br/>线程代替人工持续审核<br/>watchdog + heartbeat + locks + handoff"]
     E -->|否| R0["R0/R1<br/>按任务长度保留必要记录"]
 ```
 
 ## MAGG 的核心架构
 
-MAGG 把一次复杂生成任务拆成三层：**治理层、执行层、证据层**。
+MAGG 把一次复杂生成任务拆成四层：**治理层、执行层、证据层、长时间监管层**。前三层保证任务能被审查和验证，第四层保证任务在人离开后仍然能持续运行、留下状态、等待接管。
 
 ```mermaid
 flowchart TB
@@ -107,6 +144,13 @@ flowchart TB
         HANDOFF["handoff / 状态"]
     end
 
+    subgraph RUNTIME["长时间监管层：替代人工持续盯守"]
+        WATCHDOG["watchdog"]
+        HEARTBEAT["heartbeat"]
+        LOCKS["write locks"]
+        TAKEOVER["takeover / 接管"]
+    end
+
     SL --> RED --> BLUE --> J
     EVAL --> J
     J -->|Allow| EXE --> MERGE --> VAL --> AUDIT
@@ -115,6 +159,9 @@ flowchart TB
     BLUE -.独立 session 时记录.-> SESSION
     VAL --> HANDOFF
     AUDIT --> HANDOFF
+    WATCHDOG --> HEARTBEAT --> HANDOFF
+    LOCKS --> EXE
+    HANDOFF --> TAKEOVER
 ```
 
 ## 标准治理闭环
@@ -269,6 +316,14 @@ run_xxxx/
 └── delivery/
 ```
 
+对于长时间或无人值守任务，`08_locks/` 和 `09_handoff/` 不是装饰目录。它们承担的是原本需要人类项目管理员做的工作：
+
+- `08_locks/`：防止多个执行线程同时写坏最终产物。
+- `09_handoff/`：保存最新状态，让人或后续线程可以接管。
+- heartbeat：说明任务还活着，不是静默卡死。
+- watchdog：检查是否超时、卡住、越界或需要人工介入。
+- expiry stop：到期必须停，不允许无限自我循环。
+
 ```mermaid
 flowchart TB
     TASK["01_task<br/>任务契约/模式选择"] --> STATE["02_state<br/>session evidence"]
@@ -281,9 +336,49 @@ flowchart TB
     HAND --> DEL["delivery<br/>最终交付"]
 ```
 
+## 长时间无人值守任务的运行方式
+
+MAGG 在 R2 模式下，会把“人盯着 AI 干活”的过程拆成可记录的运行机制。
+
+```mermaid
+stateDiagram-v2
+    [*] --> Planned: 任务契约
+    Planned --> Running: 启动主控和角色线程
+    Running --> Heartbeat: 定期写状态
+    Heartbeat --> Running: 未发现异常
+    Heartbeat --> Blocked: 缺权限/缺输入/验证失败
+    Heartbeat --> Expired: 到达截止时间
+    Running --> LockedWrite: 需要写入最终产物
+    LockedWrite --> Validating: 获得写锁并执行
+    Validating --> Auditing: 验证结果
+    Auditing --> Handoff: 写交接文件
+    Blocked --> Handoff: 等待人工接管
+    Expired --> Handoff: 停止并交还状态
+    Handoff --> [*]
+```
+
+这就是为什么 MAGG 要使用多线程：**不是为了热闹，而是用线程承担原本由人类完成的持续审核、交叉检查、状态记录和异常接管。**
+
 ## 典型使用案例
 
-### 1. 优化一个 Skill
+### 1. 长时间无人值守生成/优化
+
+```text
+使用 $multi-agent-generative-governance 运行一个长时间无人值守优化任务。
+要求启用 watchdog、heartbeat、write locks 和 latest handoff。
+如果验证失败或任务超时，停止继续写入，并把当前状态交还给我。
+```
+
+预期行为：
+
+- 进入 R2 模式。
+- 明确截止条件和接管机制。
+- 定期记录任务状态。
+- 写入前使用锁。
+- 验证失败时停止扩大修改。
+- 最后输出 handoff，而不是假装全部完成。
+
+### 2. 优化一个 Skill
 
 ```text
 使用 $multi-agent-generative-governance 优化这个 Skill。
@@ -300,7 +395,7 @@ flowchart TB
 - 裁判只允许具体文件和章节修改。
 - 验证区分 L0/L1/L2/L3。
 
-### 2. 真实多线程审查
+### 3. 真实多线程审查
 
 ```text
 使用 $multi-agent-generative-governance 做真实多线程审查。
@@ -315,7 +410,7 @@ flowchart TB
 - 每个 session 只收到本角色需要的输入。
 - 没有 session evidence 就不能宣称独立多线程。
 
-### 3. 多候选方案比较
+### 4. 多候选方案比较
 
 ```text
 使用 $multi-agent-generative-governance 为这个产品方案生成两个候选版本，再用裁判选择合并方向。
@@ -374,17 +469,19 @@ multi-agent-generative-governance-skill/
 
 ![Multi-Agent Generative Governance Skill](assets/hero-en.svg)
 
-**Multi-Agent Generative Governance (MAGG)** is a Codex Skill for turning complex AI generation into an auditable governance process with role separation, controlled writes, validation evidence, and handoff.
+**Multi-Agent Generative Governance (MAGG)** is a Codex Skill for turning complex AI generation into an auditable governance process with role separation, controlled writes, validation evidence, long-running supervision, and handoff.
+
+Its core advantage is not simply "more agents." MAGG uses independent threads and durable records to replace part of the human supervision loop: continuous review, cross-checking, write control, status tracking, and safe handoff when humans are not watching the task in real time.
 
 ### When To Use MAGG
 
 Use MAGG when a task is too broad, risky, or easy to self-confirm for a single-pass generation:
 
+- Long-running or unattended work that needs watchdog, heartbeat, locks, and handoff.
 - Skill, SOP, prompt-system, or workflow optimization.
 - Complex code projects or multi-file architecture work.
 - Multi-section decks, reports, courseware, product plans, or story systems.
 - True multi-thread or independent-session review.
-- Long-running work that needs heartbeat, locks, status, and handoff.
 - Candidate comparison and merge decisions.
 
 Do not use MAGG for trivial edits, one-line Q&A, or work where the user only wants a fast draft.
@@ -407,6 +504,8 @@ Red, Blue, Judge, and Validator must be separate sessions and must record sessio
 
 ![Governance loop](assets/governance-loop-en.svg)
 
+MAGG is designed so threads can take over part of the work humans usually do during long tasks: checking assumptions, challenging outputs, approving writes, validating claims, recording state, and handing control back to a person when needed.
+
 ```mermaid
 flowchart TB
     User["User Goal"] --> Contract["Task Contract"]
@@ -420,6 +519,7 @@ flowchart TB
     Validate --> Audit["Audit"]
     Audit --> Handoff["State Update / Handoff"]
     Judge -->|Reject / Defer| Scope
+    Watchdog["Watchdog / Heartbeat"] --> Handoff
 ```
 
 ### True Threads
