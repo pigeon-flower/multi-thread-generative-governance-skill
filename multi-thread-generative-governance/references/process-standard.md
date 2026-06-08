@@ -1,6 +1,6 @@
-# Process Standard
+﻿# Process Standard
 
-This reference contains the detailed operating standard for the multi-agent generative governance skill. Load it when you need exact mode rules, permissions, state transitions, verification standards, audit scoring, rule evolution, or long-running safeguards.
+This reference contains the detailed operating standard for the multi-thread generative governance skill. Load it when you need exact mode rules, permissions, state transitions, verification standards, audit scoring, rule evolution, or long-running safeguards.
 
 ## Table of Contents
 

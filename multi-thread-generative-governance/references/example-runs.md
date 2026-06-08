@@ -1,4 +1,4 @@
-# Example Runs
+﻿# Example Runs
 
 Use these examples to map user requests to G/W/R choices and role plans.
 
@@ -221,10 +221,10 @@ Roles:
 
 - Main.
 - Goal calibrator, proxied by main if the task is clear.
-- Red: identify concrete future misuse or missing workflow risks. Use `Red-1` independent session when isolation is required.
-- Blue: reject preference-only findings and require minimal fixes. Use `Blue-1` independent session when isolation is required.
-- Judge: allow only specific section/file edits. Use `Judge-1` independent session when isolation is required.
-- Eval designer: define realistic evals and pass/fail criteria before edits. Use `Eval-1` independent session for complex skill optimization.
+- Red: identify concrete future misuse or missing workflow risks. Use a user-language short name such as `红队-1` or `Red-1` when isolation is required.
+- Blue: reject preference-only findings and require minimal fixes. Use a user-language short name such as `蓝队-1` or `Blue-1` when isolation is required.
+- Judge: allow only specific section/file edits. Use a user-language short name such as `裁判-1` or `Judge-1` when isolation is required.
+- Eval designer: define realistic evals and pass/fail criteria before edits. Use a user-language short name such as `评测-1` or `Eval-1` for complex skill optimization.
 - Validator: run skill checks or record environment gaps.
 - Auditor: summarize boundaries, changes, residual risk, and next round.
 
@@ -267,11 +267,11 @@ Required sessions:
 
 | Role | Short Name | Requirement |
 |---|---|---|
-| Main | Main-0 | Current project session, final writer |
-| Red | Red-1 | Independent project-scoped session |
-| Blue | Blue-1 | Independent project-scoped session |
-| Judge | Judge-1 | Independent project-scoped session |
-| Eval | Eval-1 | Independent project-scoped session |
+| Main | 主控-0 / Main-0 | Current project session, final writer |
+| Red | 红队-1 / Red-1 | Independent project-scoped session |
+| Blue | 蓝队-1 / Blue-1 | Independent project-scoped session |
+| Judge | 裁判-1 / Judge-1 | Independent project-scoped session |
+| Eval | 评测-1 / Eval-1 | Independent project-scoped session |
 
 Formal evidence:
 
@@ -349,13 +349,13 @@ Pass:
 Prompt:
 
 ```text
-对 multi-agent-generative-governance skill 做一次自省优化。要求每个审查线程都是独立 session，并记录 session id 和短名称。
+对 multi-thread-generative-governance skill 做一次自省优化。要求每个审查线程都是独立 session，并记录 session id 和短名称。
 ```
 
 Expected behavior:
 
 - Use `G3/W1/R1`.
-- Create project-scoped `Red-1`, `Blue-1`, `Judge-1`, and `Eval-1`.
+- Create project-scoped sessions with short names in the user's language, such as `红队-1`, `蓝队-1`, `裁判-1`, and `评测-1` for Chinese users.
 - Write session evidence and judge decision before source edits.
 
 Pass:

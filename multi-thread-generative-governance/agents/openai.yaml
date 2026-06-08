@@ -1,0 +1,7 @@
+﻿interface:
+  display_name: "Multi-Thread Generative Governance"
+  short_description: "Structured adversarial AI workflow"
+  default_prompt: "Use $multi-thread-generative-governance to triage and run a controlled multi-thread governance workflow for this artifact."
+
+policy:
+  allow_implicit_invocation: true

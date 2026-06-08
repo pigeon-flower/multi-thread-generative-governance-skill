@@ -1,9 +1,9 @@
----
-name: multi-agent-generative-governance
-description: Use when Codex needs to design, run, evaluate, or document a controlled multi-agent or multi-thread adversarial generation workflow for complex artifacts such as code projects, documents, PPTs, images, stories, product plans, study materials, skill packages, or long-running AI self-review tasks. Trigger when the user asks for 多线程对抗式生成, 多线程会议, 多 session, 独立视角, 防信息污染, 多角色生成治理, AI self-review, red/blue/judge/audit workflows, rule self-evolution, run workspace protocols, controlled candidate/branch writing, verification/audit loops, skill optimization governance, or turning such a process into a standardized skill or SOP.
+﻿---
+name: multi-thread-generative-governance
+description: Use when Codex needs to design, run, or document a multi-thread or multi-session adversarial generation governance workflow for complex artifacts such as code projects, documents, PPTs, images, stories, product plans, study materials, or long-running AI self-review tasks. Trigger when the user asks for 多线程对抗式生成, 多线程会议, 多 session, 独立视角, 防信息污染, 多角色生成治理, AI self-review, red/blue/judge/audit workflows, rule self-evolution, run workspace protocols, controlled candidate/branch writing, verification/audit loops, or turning such a process into a standardized skill or SOP.
 ---
 
-# Multi-Agent Generative Governance
+# Multi-Thread Generative Governance
 
 ## Operating Principle
 
@@ -30,8 +30,6 @@ Before proposing threads or edits, create a short Task Contract:
 5. Define the minimum effective improvement: what would count as a real improvement instead of a shallow token gesture.
 
 If key information is missing, make a conservative assumption and record it. Ask only when a wrong assumption would cause risky writes, user-visible misdirection, or wasted long-running work.
-
-Then select the smallest governance mode that can satisfy the Task Contract. Do not create independent sessions, run workspaces, or role artifacts merely because the skill can support them.
 
 ## Self-Optimization Mode
 
@@ -183,4 +181,3 @@ Use a compressed version for G1 tasks. Generate `README_RUN.zh.md` when creating
 For user-facing replies, report the chosen G/W/R mode, enabled independent sessions or main-proxied role passes, minimum effective improvement, next loop step, and any validation limits. Keep the reply short unless the user asks for a full SOP.
 
 For run files, be structured and explicit. Use templates from `references/templates.md`.
-
