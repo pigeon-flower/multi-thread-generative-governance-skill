@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="560" viewBox="0 0 1280 560">
+  <rect width="1280" height="560" fill="#0e1522"/>
+  <text x="62" y="78" fill="#fff" font-family="Segoe UI, Arial" font-size="42" font-weight="800">Validation Is Not One Word</text>
+  <text x="64" y="118" fill="#a9b8c9" font-family="Segoe UI, Arial" font-size="20">MAGG separates structural checks from real user-goal proof.</text>
+  <g font-family="Segoe UI, Arial" font-weight="800">
+    <rect x="120" y="390" width="210" height="70" rx="14" fill="#1a2a40"/><text x="168" y="435" fill="#9fb3c8" font-size="28">L0 Static</text>
+    <rect x="360" y="320" width="210" height="140" rx="14" fill="#1f3549"/><text x="400" y="396" fill="#44d7c8" font-size="28">L1 Rules</text>
+    <rect x="600" y="235" width="210" height="225" rx="14" fill="#2a3449"/><text x="640" y="356" fill="#ffcf5a" font-size="28">L2 Use Path</text>
+    <rect x="840" y="140" width="260" height="320" rx="14" fill="#3a2b46"/><text x="910" y="309" fill="#ff758d" font-size="28">L3 Outcome</text>
+  </g>
+  <path d="M135 350 H1070" stroke="#dde9f5" stroke-width="2" opacity=".28"/>
+  <text x="122" y="500" fill="#c8d6e4" font-family="Segoe UI, Arial" font-size="19">Every report states: verified, failed, not verified, environment gaps, cannot claim.</text>
+</svg>

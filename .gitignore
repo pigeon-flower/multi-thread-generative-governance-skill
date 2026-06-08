@@ -1,0 +1,10 @@
+# OS and editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Local Codex/runtime artifacts
+runs/
+outputs/
+*.tmp

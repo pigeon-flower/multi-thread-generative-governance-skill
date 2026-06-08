@@ -1,0 +1,8 @@
+interface:
+  display_name: "Multi-Agent Generative Governance"
+  short_description: "Structured adversarial AI workflow"
+  default_prompt: "Use $multi-agent-generative-governance to triage and run a controlled multi-agent governance workflow for this artifact."
+
+policy:
+  allow_implicit_invocation: true
+
