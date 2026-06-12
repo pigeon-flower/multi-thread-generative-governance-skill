@@ -6,6 +6,12 @@ Copy and adapt these templates when creating a run workspace or documenting a go
 
 1. Task Contract
 2. Task Triage
+2A. Speed Budget
+2B. Behavior Path
+2C. Compressed Round Report
+2D. Session Registry
+2E. Handoff Capsule
+2F. Reuse Decision
 3. Independent Thread Session Check
 4. Forward-Test Eval Case
 5. Goal Calibration
@@ -139,6 +145,187 @@ README_RUN.zh.md：需要 / 不需要
 ## 13. Next Action
 
 ...
+```
+
+## Speed Budget
+
+```markdown
+# Speed Budget
+
+run_id:
+profile: Fast / Standard / Full / Escalated
+time_budget:
+max_roles:
+max_rounds:
+max_findings_per_role:
+max_output_chars:
+
+Hard triggers that override budget:
+- ...
+
+Stop / ContinueCompressed / EscalateFull rule:
+- Stop when:
+- ContinueCompressed when:
+- EscalateFull when:
+
+Cannot cut:
+- independent session evidence when true multi-thread is claimed
+- judge authorization before writes
+- validation levels and cannot-claim fields
+- audit of boundary incidents
+```
+
+## Behavior Path
+
+```markdown
+# Behavior Path
+
+run_id:
+monitor_thread_id:
+protected_paths:
+- ...
+editable_paths:
+- ...
+
+| Step | Actor | Thread ID | Action | Input Summary | Read Paths | Write Paths | Forbidden Paths | Output Pointer | Status | Compliance Notes |
+|---:|---|---|---|---|---|---|---|---|---|---|
+| 1 | Main | | | | | | | | planned / active / done / blocked | |
+
+Incidents:
+
+| Step | Incident | Remediation | Audit Status |
+|---:|---|---|---|
+| | | | |
+```
+
+## Compressed Round Report
+
+```markdown
+# Round RXXX
+
+Attack surface:
+Scope lock:
+Minimum effective improvement:
+
+Red findings:
+- ...
+
+Blue response:
+- ...
+
+Judge decision:
+- Allow / Reject / Defer / NeedMoreEvidence:
+- Allowed edits:
+- Forbidden edits:
+- Required validation:
+
+Execution summary:
+- ...
+
+Validation:
+- Verified:
+- Failed:
+- Not verified:
+- Environment gaps:
+- Cannot claim:
+
+Audit:
+- Boundary compliance:
+- Residual risk:
+- Next action: Stop / ContinueCompressed / EscalateFull
+```
+
+## Session Registry
+
+```markdown
+# Session Registry
+
+run_id:
+project_path:
+registry_updated_at:
+
+| Team ID | Role | Thread ID | Title | Project Path | Scope Tags | Status | Lease Owner | Lease Expires | Last Input Summary | Last Output Pointer | Handoff Pointer | Memory Capsule Pointer | Contamination Notes | Reuse Eligibility |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| mtgg-A | Red | | 红队-A | | | idle / assigned / waiting / blocked / expired / retired | | | | | | | | reusable / needs_rebrief / not_reusable |
+
+Status rules:
+- idle: available for compatible reuse
+- assigned: currently leased to a task
+- waiting: waiting on dependency
+- blocked: cannot progress without input or environment change
+- expired: lease ended and needs review
+- retired: not eligible unless reactivated
+```
+
+## Handoff Capsule
+
+```markdown
+# Handoff Capsule
+
+capsule_id:
+team_id:
+role:
+thread_id:
+title:
+project_path:
+created_by:
+created_at:
+confidence: direct / reconstructed / partial
+
+Current objective:
+
+Scope lock:
+
+Allowed inputs/files:
+
+Forbidden inputs/files:
+
+Durable findings or decisions:
+- ...
+
+Unresolved risks:
+- ...
+
+Validation state:
+- verified:
+- failed:
+- not verified:
+- cannot claim:
+
+Output pointers:
+- ...
+
+Contamination notes:
+- ...
+
+Next recommended action:
+```
+
+## Reuse Decision
+
+```markdown
+# Session Reuse Decision
+
+run_id:
+new_objective:
+project_path:
+decision_time:
+
+| Needed Role | Reused Thread ID | Reused Title | Reuse Decision | Reason | Required Rebrief | Handoff Capsule |
+|---|---|---|---|---|---|---|
+| Red | | | reuse / create_new / retire / wait | | | |
+
+Rejected candidates:
+
+| Role | Thread ID | Title | Rejection Reason |
+|---|---|---|---|
+| | | | busy / expired / contaminated / wrong-project / wrong-scope / missing-handoff / user-requested-fresh |
+
+New sessions authorized:
+- Role:
+- Reason:
+- Naming plan:
+- Handoff seed:
 ```
 
 ## Independent Thread Session Check

@@ -173,6 +173,47 @@ Always define Minimum Effective Improvement:
 - What counts as a real improvement?
 - What would be a shallow non-solution?
 
+### Runtime Efficiency Layer
+
+After G/W/R selection, choose a run profile. Profiles reduce avoidable coordination cost; they do not weaken quality guarantees.
+
+| Profile | Typical Use | Cost Control | Quality Boundary |
+|---|---|---|---|
+| Fast | Low-risk, no independent-session claim | Main plus optional role passes; one round | Must disclose that role passes are not independent threads |
+| Standard | Bounded review or quality work | Selected Red/Blue/Judge/Validator; one or two rounds | Judge boundary and validation summary remain required |
+| Full | True multi-session, anti-contamination, complex artifact, important delivery | Independent Red/Blue/Judge/Validator/Auditor, plus Goal/Executor as needed | Session evidence, write control, validation, and audit are mandatory |
+| Escalated | Long-running, R2, branches/candidates, rule evolution, high-risk writes | Full plus Watchdog/MergeJudge/RuleEvolver/specialists | Locks, handoff, runtime health, expiry stop, and takeover are mandatory |
+
+Declare a speed budget when runtime matters:
+
+- time budget or deadline
+- maximum roles
+- maximum rounds
+- maximum findings per role
+- maximum output length
+
+When the budget conflicts with a hard trigger, the hard trigger wins. Record why the run escalated instead of silently cutting safeguards.
+
+Use `Stop / ContinueCompressed / EscalateFull` after each decision:
+
+- `Stop`: minimum effective improvement is met and validation limits are recorded.
+- `ContinueCompressed`: another bounded round is useful and within budget.
+- `EscalateFull`: hard trigger, high-risk finding, failed validation, unclear scope, or user request requires Full/Escalated governance.
+
+### Session Reuse Layer
+
+Before creating independent sessions, inspect the session registry for compatible reusable roles. Reuse is the default when project path, role, scope tags, isolation level, and status are compatible.
+
+Reuse must be rejected when:
+
+- the previous role is busy, blocked, expired, retired, archived, or wrong-project
+- the new task requires stricter anti-contamination than the previous exposure allows
+- prior context would bias the role in a way that conflicts with the new task
+- the role's handoff capsule is missing and continuity cannot be reconstructed
+- the user explicitly requests a fresh team
+
+Every new session must cite a reuse decision: reused thread id, or rejected candidate ids and reasons.
+
 ## 3. Role Model
 
 A role is not automatically a thread. A role becomes a thread only when it has a separate Codex session and recorded session evidence. Otherwise, it is a main-proxied role pass.
@@ -205,12 +246,40 @@ Conclusion permissions matter:
 Session permissions matter:
 
 - Each independent session receives only its allowed input package.
+- Each independent session must be renamed immediately after creation with a short anonymous readable title in the user's language. Naming is a gate; substantive delegation should wait until naming is complete.
+- If immediate naming is missed, record a naming incident, remediate the title, and include the incident in session evidence, behavior path, and audit.
 - Session titles must be short, anonymous, readable, and written in the user's language when practical.
 - Red must not read Blue/Judge/Executor outputs before submitting its own report.
 - Blue may read Red findings only when its job is to verify/refute them.
 - Judge may read source materials plus Red/Blue outputs, but not uncited private reasoning.
 - No session may claim another session's work.
 - Same-session role passes must be labeled as simulated or main-proxied.
+
+Session lifecycle matters:
+
+- Maintain a `session_registry` for true independent-session work.
+- Assign one active lease per role session.
+- Rebrief reused sessions with task-local input plus a minimal handoff capsule.
+- Retire stale sessions explicitly; do not leave old role sessions ambiguous.
+- Prefer retirement over deletion/archive.
+- Delete/archive only after unique context has been merged, rejected, or captured in a handoff capsule.
+
+### Handoff Capsules
+
+A handoff capsule preserves continuity without dumping full chat history. It must include:
+
+- role and thread id
+- team id and project path
+- current objective and scope lock
+- allowed and forbidden files/inputs
+- durable findings, decisions, or validation state
+- unresolved risks
+- output pointers
+- contamination notes
+- cannot-claim limits
+- next recommended action
+
+Use capsules when reusing a role, replacing a role with a new session, retiring a role, or resuming after unrelated user conversation. If a capsule is reconstructed from records rather than the role's own final output, mark confidence as partial.
 
 ## 4. Run Workspace
 
@@ -237,6 +306,8 @@ runs/run_0001/
     round_state.md
     thread_status.md
     session_evidence.md
+    session_registry.md
+    handoff_capsules.md
     runtime_health.md
   03_bus/
     inbox/
@@ -281,6 +352,36 @@ runs/run_0001/
     audit_summary.md
     reproduction_notes.md
 ```
+
+For Fast or low-risk Standard role-pass work, a compressed workspace may be used:
+
+```text
+task_contract.md
+decision.md
+validation.md
+final_report.md
+```
+
+For Full, Escalated, R1/R2, or true independent sessions, preserve at least task contract, session evidence, session registry, handoff capsules when roles may be reused or replaced, judge decision, validation report, audit log, and behavior path when monitoring is enabled.
+
+### Behavior Path
+
+Create a Monitor role when the user asks for detailed behavior records, when the work is Full/Escalated and process traceability matters, or when optimizing MTGG itself.
+
+The Monitor records observable actions only:
+
+- actor and thread id
+- step time or sequence number
+- action summary
+- input summary and forbidden inputs
+- read paths
+- write paths
+- protected paths
+- output pointer
+- status
+- compliance notes
+
+Record thread creation, session naming, prompts, reads, writes, decisions, validation, audit, incidents, and remediations. Do not record hidden reasoning.
 
 `session_evidence.md` is required for every true multi-thread run. It must record role, short title, session/thread id, source thread id when available, project path, input summary, forbidden inputs, permissions, output path, status, and contamination notes.
 
