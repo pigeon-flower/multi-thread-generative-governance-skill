@@ -9,7 +9,7 @@ This update turns MTGG from a process-heavy multi-session workflow into a more e
 - `Reuse-Fast`: reuse an existing MTGG team for repeated, related, or lightweight work.
 - `Full-Governance`: run strict independent-session governance for high-risk, auditable, anti-contamination work.
 
-This is not a separate FMTGG skill. It is an optimized MTGG runtime model.
+This remains one MTGG skill. The two environments are runtime profiles inside the same skill.
 
 ## Why This Was Needed
 
@@ -152,7 +152,7 @@ This follows the skill-creator principle that `SKILL.md` should be an operationa
 Completed:
 
 - Confirmed official skill name remains `multi-thread-generative-governance`.
-- Confirmed no FMTGG or candidate naming remains in the promoted skill.
+- Confirmed no candidate-skill naming remains in the promoted skill.
 - Confirmed key runtime concepts exist in the skill files:
   - `Reuse-Fast`
   - `Full-Governance`
